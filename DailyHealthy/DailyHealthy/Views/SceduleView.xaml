@@ -1,0 +1,64 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="DailyHealthy.SceduleView"
+             x:Name="simpleCalendarPage"
+             xmlns:local="clr-namespace:DailyHealthy.ViewModels"
+             xmlns:plugin="clr-namespace:Xamarin.Plugin.Calendar.Controls;assembly=Xamarin.Plugin.Calendar">
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Command="{Binding TodayCommand}" Text="Today" />
+    </ContentPage.ToolbarItems>
+    <ContentPage.BindingContext>
+        <local:SceduleViewModel />
+    </ContentPage.BindingContext>
+
+    <StackLayout>
+        <plugin:Calendar
+                    Padding="10,0"
+                    Events="{Binding Events}"
+                    HorizontalOptions="FillAndExpand"
+                    MaximumDate="{Binding MaximumDate}"
+                    MinimumDate="{Binding MinimumDate}"
+                    Month="{Binding Month}"
+                    SelectedDate="{Binding SelectedDate}"
+                    VerticalOptions="FillAndExpand"
+                    Year="{Binding Year}">
+
+            <plugin:Calendar.EventTemplate>
+                <DataTemplate>
+                    <StackLayout
+                                Padding="15,0,0,0"
+                                HorizontalOptions="FillAndExpand"
+                                VerticalOptions="FillAndExpand">
+                        <Label
+                                    FontAttributes="Bold"
+                                    FontSize="Medium"
+                                    Text="{Binding Name}" />
+                        <StackLayout Orientation="Horizontal">
+                            <Label
+                                    FontAttributes="Bold"
+                                    FontSize="Medium"
+                                    Text="{Binding GLU_AC}"
+                                    HorizontalOptions="Start"/>
+                            <Label
+                                    FontAttributes="Bold"
+                                    FontSize="Medium"
+                                    Text="{Binding GLU_PC}"
+                                    HorizontalOptions="Center"/>
+                        </StackLayout>
+                        <Label
+                                    FontSize="Small"
+                                    LineBreakMode="WordWrap"
+                                    Text="{Binding Description}" />
+
+                        <StackLayout.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding BindingContext.EventSelectedCommand, Source={x:Reference simpleCalendarPage}}" CommandParameter="{Binding .}" />
+                        </StackLayout.GestureRecognizers>
+                    </StackLayout>
+                </DataTemplate>
+            </plugin:Calendar.EventTemplate>
+        </plugin:Calendar>
+        <Button Text="Add" VerticalOptions="End" Command="{Binding AddCommand}"/>
+    </StackLayout>
+</ContentPage>
