@@ -1,4 +1,5 @@
 ﻿using DailyHealthy.Views;
+using System;
 using Xamarin.Forms;
 
 namespace DailyHealthy
@@ -9,8 +10,10 @@ namespace DailyHealthy
         {
             InitializeComponent();
 
-            MainPage = new SceduleView();
+            MainPage = new NavigationPage(new SceduleView());
         }
+
+        public static DateTime dateTime = DateTime.Today;
 
         protected override void OnStart()
         {

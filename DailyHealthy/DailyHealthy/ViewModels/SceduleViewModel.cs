@@ -16,58 +16,14 @@ namespace DailyHealthy.ViewModels
 { 
     public class SceduleViewModel : BaseViewModel,  INotifyPropertyChanged
     {
-        public string PhotoPath;
-        public ICommand TodayCommand => new Command(() => { Year = DateTime.Today.Year; Month = DateTime.Today.Month; SelectedDate = DateTime.Today; });
         public ICommand EventSelectedCommand => new Command(async (item) => await ExecuteEventSelectedCommand(item));
-        public ICommand AddCommand => new Command ( () => 
-        {
-            List<EventModel> eventModels = new List<EventModel>();
-            EventModel test = new EventModel()
-            {
-                Name = "test1",
-            };
-            eventModels.Add(test);
-            eventModels.Add(test);
-
-            EventModel test2 = new EventModel()
-            {
-                Name = "test2",
-            };
-            eventModels.Add(test2);
-            Events.Add(DateTime.Today, eventModels);
-        });
 
         public SceduleViewModel() : base()
         {
-            // testing all kinds of adding events
-            // when initializing collection
             Events = new EventCollection() 
             {
             };
-
-            //    Task.Delay(3000).ContinueWith(t =>
-            //    {
-            //        // get observable collection later
-            //        var todayEvents = Events[DateTime.Now] as ObservableCollection<EventModel>;
-
-            //        // insert/add items to observable collection
-            //        todayEvents.Insert(0, new EventModel { Name = "Cool event insert", Description = "This is Cool event's description!" });
-            //        todayEvents.Add(new EventModel { Name = "Cool event add", Description = "This is Cool event's description!" });
-
-            //        Month += 1;
-            //    }, TaskScheduler.FromCurrentSynchronizationContext());
-            //}, TaskScheduler.FromCurrentSynchronizationContext());
-        }
-
-        private IEnumerable<EventModel> GenerateEvents(int count, string name)
-        {
-            return Enumerable.Range(1, count).Select(x => new EventModel
-            {
-                Name = $"{name} event{x}",
-                Description = $"This is {name} event{x}'s description!",
-                GLU_AC = 80,
-                GLU_PC = 120
-            }) ;
+            ParsedbEvents(DateTime.Today.Year, DateTime.Today.Month);
         }
 
         public EventCollection Events { get; }
@@ -76,7 +32,11 @@ namespace DailyHealthy.ViewModels
         public int Month
         {
             get => _month;
-            set => SetProperty(ref _month, value);
+            set
+            {
+                ParsedbEvents(_year, value);
+                SetProperty(ref _month, value);
+            }
         }
 
         public int _year = DateTime.Today.Year;
@@ -93,32 +53,50 @@ namespace DailyHealthy.ViewModels
             get => _selectedDate;
             set
             {
-                //Parse db events first
-                //Events.Add(value, new List<EventModel>(GenerateEvents(1, "test")));
-                ParsedbEvents(value);
+                App.dateTime = value;
                 SetProperty(ref _selectedDate, value);
             }
         }
 
-        private void ParsedbEvents(DateTime dateTime)
+        private async void ParsedbEvents(int year,int month)
         {
-            List<EventModel> eventModels = new List<EventModel>();
-            eventModels.Add(new EventModel()
+            Events.Clear();
+            //List<EventModel> eventModels = new List<EventModel>();
+            List<ConstantsModel> constantsModels = new List<ConstantsModel>();
+            Constants constants = new Constants();
+            constantsModels = await constants.GetItemsAsync();
+
+            var queryDate = from data in constantsModels
+                       where data.Datetime.Year == year && data.Datetime.Month == month
+                       group data by data.Datetime into newGroup
+                       select newGroup;
+            foreach (var dateGroup in queryDate)
             {
-                Name = "test",
-            });
-            //Parse data in db
-            Events[dateTime] = eventModels;
+                List<EventModel> eventModels = new List<EventModel>();
+                int index = dateGroup.Key.Day - DateTime.DaysInMonth(DateTime.Today.Year, DateTime.Today.Month);
+                foreach (var CM in dateGroup)
+                {
+                    EventModel eventModel = new EventModel()
+                    {
+                        Name = CM.Name,
+                        GLU = CM.GLU_PC.ToString() + "    " + CM.GLU_AC.ToString(),
+                        Description = CM.Description,
+                        Path = CM.Path
+                    };
+                    eventModels.Add(eventModel);
+                }
+                Events.Add(new DateTime(year, month, DateTime.DaysInMonth(year, month)).AddDays(index), eventModels);
+            }
         }
 
-        private DateTime _minimumDate = new DateTime(2019, 4, 29);
+        private DateTime _minimumDate = new DateTime(DateTime.Today.Year, DateTime.Today.Month,1).AddMonths(-6);
         public DateTime MinimumDate
         {
             get => _minimumDate;
             set => SetProperty(ref _minimumDate, value);
         }
 
-        private DateTime _maximumDate = DateTime.Today.AddMonths(5);
+        private DateTime _maximumDate = new DateTime(DateTime.Today.Year, DateTime.Today.Month, DateTime.DaysInMonth(DateTime.Today.Year, DateTime.Today.Month));
 
         public DateTime MaximumDate
         {

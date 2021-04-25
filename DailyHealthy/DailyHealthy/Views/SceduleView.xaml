@@ -6,9 +6,6 @@
              xmlns:local="clr-namespace:DailyHealthy.ViewModels"
              xmlns:plugin="clr-namespace:Xamarin.Plugin.Calendar.Controls;assembly=Xamarin.Plugin.Calendar">
 
-    <ContentPage.ToolbarItems>
-        <ToolbarItem Command="{Binding TodayCommand}" Text="Today" />
-    </ContentPage.ToolbarItems>
     <ContentPage.BindingContext>
         <local:SceduleViewModel />
     </ContentPage.BindingContext>
@@ -31,26 +28,26 @@
                                 Padding="15,0,0,0"
                                 HorizontalOptions="FillAndExpand"
                                 VerticalOptions="FillAndExpand">
-                        <Label
-                                    FontAttributes="Bold"
-                                    FontSize="Medium"
-                                    Text="{Binding Name}" />
-                        <StackLayout Orientation="Horizontal">
-                            <Label
-                                    FontAttributes="Bold"
-                                    FontSize="Medium"
-                                    Text="{Binding GLU_AC}"
-                                    HorizontalOptions="Start"/>
-                            <Label
-                                    FontAttributes="Bold"
-                                    FontSize="Medium"
-                                    Text="{Binding GLU_PC}"
-                                    HorizontalOptions="Center"/>
-                        </StackLayout>
-                        <Label
-                                    FontSize="Small"
-                                    LineBreakMode="WordWrap"
-                                    Text="{Binding Description}" />
+                        
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Image  
+                            Grid.Row="0" Grid.Column="0" Grid.RowSpan="3" 
+                            BackgroundColor="White"  Margin="0,0,15,0" VerticalOptions="FillAndExpand" 
+                            WidthRequest="80" HeightRequest="90" 
+                            Source="{Binding Path}" Aspect="Fill" />
+                            <Label Grid.Row="0" Grid.Column="1" Text="{Binding Name}" FontAttributes="Bold"/>
+                            <Label Grid.Row="1" Grid.Column="1" Text="{Binding Description}" TextColor="#a97352" FontAttributes="Bold"/>
+                            <Label Grid.Row="2" Grid.Column="1" Text="{Binding GLU}" TextColor="Silver"/>
+                        </Grid>
 
                         <StackLayout.GestureRecognizers>
                             <TapGestureRecognizer Command="{Binding BindingContext.EventSelectedCommand, Source={x:Reference simpleCalendarPage}}" CommandParameter="{Binding .}" />
@@ -59,6 +56,6 @@
                 </DataTemplate>
             </plugin:Calendar.EventTemplate>
         </plugin:Calendar>
-        <Button Text="Add" VerticalOptions="End" Command="{Binding AddCommand}"/>
+        <Button Text="Add" VerticalOptions="End" Clicked="Button_Clicked"/>
     </StackLayout>
 </ContentPage>

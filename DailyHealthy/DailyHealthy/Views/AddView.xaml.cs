@@ -14,11 +14,12 @@ namespace DailyHealthy.Views
     public partial class AddView : ContentPage
     {
         private DateTime Selecteddatatime;
-        private string PicturePath; 
+        private string PicturePath;
         public AddView(DateTime dateTime)
         {
             InitializeComponent();
             Selecteddatatime = dateTime;
+            labelTitle.Text = dateTime.ToString("yyyy/MM/dd");
         }
 
         private async void BtnLoadPic_Clicked(object sender, EventArgs e)
@@ -40,7 +41,7 @@ namespace DailyHealthy.Views
 
         private async void BtnTakePic_Clicked(object sender, EventArgs e)
         {
-              var result = await MediaPicker.CapturePhotoAsync(new MediaPickerOptions
+            var result = await MediaPicker.CapturePhotoAsync(new MediaPickerOptions
             {
                 Title = "Please take a photo",
             });
@@ -60,26 +61,41 @@ namespace DailyHealthy.Views
             Navigation.PopAsync();
         }
 
-        private void BtnSave_Clicked(object sender, EventArgs e)
+        private async void BtnSave_Clicked(object sender, EventArgs e)
         {
             //Save to db
             Constants constants = new Constants();
-            EventModel eventModel = new EventModel()
+            ConstantsModel constantsModel = new ConstantsModel()
             {
                 Datetime = Selecteddatatime,
-                Name = entry_name.Text.ToString().Trim(),
-                GLU_PC = Convert.ToInt32(entry_PC.Text.ToString().Trim()),
-                GLU_AC = Convert.ToInt32(entry_AC.Text.ToString().Trim()),
-                Description = entry_note.Text.ToString().Trim(),
                 Path = PicturePath
             };
 
-            List<EventModel> Checkitem = constants.GetItemsAsync(eventModel.Datetime, eventModel.Name);
-            if (Checkitem.Count == 0)
-                constants.InsertItemAsync(eventModel);
+            if (entry_name != null && !string.IsNullOrWhiteSpace(entry_name.Text))
+                constantsModel.Name = entry_name.Text.ToString();
+
+            if (entry_PC != null && !string.IsNullOrWhiteSpace(entry_PC.Text))
+                constantsModel.GLU_PC = Convert.ToInt32(entry_PC.Text.ToString().Trim());
             else
-                constants.UpdateItemAsync(eventModel);
-            Navigation.PopAsync();
+                constantsModel.GLU_PC = 0;
+
+            if (entry_AC != null && !string.IsNullOrWhiteSpace(entry_AC.Text))
+                constantsModel.GLU_AC = Convert.ToInt32(entry_AC.Text.ToString().Trim());
+            else
+                constantsModel.GLU_AC = 0;
+
+            if (entry_note != null && !string.IsNullOrWhiteSpace(entry_note.Text))
+                constantsModel.Description = entry_note.Text.ToString();
+            else
+                constantsModel.Description = "";
+
+            ConstantsModel Checkitem = await constants.GetItemsAsync(constantsModel.Datetime, constantsModel.Name);
+            if (Checkitem == null)
+                constants.InsertItemAsync(constantsModel);
+            else
+                constants.UpdateItemAsync(constantsModel);
+            await App.Current.MainPage.DisplayAlert("Save", "Save complete", "Ok");
+            await Navigation.PopAsync();
         }
     }
 }

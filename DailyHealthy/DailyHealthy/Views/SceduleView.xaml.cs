@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DailyHealthy.Views;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
@@ -15,6 +16,10 @@ namespace DailyHealthy
         public SceduleView()
         {
             InitializeComponent();
+        }
+        private async void Button_Clicked(object sender, EventArgs e)
+        {
+            await Navigation.PushAsync(new AddView(App.dateTime));
         }
     }
 }

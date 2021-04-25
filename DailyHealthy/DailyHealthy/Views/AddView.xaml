@@ -4,38 +4,41 @@
              x:Class="DailyHealthy.Views.AddView"
              xmlns:local="clr-namespace:DailyHealthy.ViewModels">
     <ContentPage.Content>
-        <StackLayout Padding="0,20,0,0" VerticalOptions="FillAndExpand" BackgroundColor="DarkBlue">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="2*"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="2*"/>
-                </Grid.ColumnDefinitions>
-
-                <Label Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Text=""/>
-                <Label Grid.Row="1" Grid.Column="0" Text="Name" TextColor="AntiqueWhite" FontSize="Medium"/>
-                <Entry x:Name="entry_name" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3" Text="" TextColor="Black" FontSize="Medium"/>
-                <Label Grid.Row="2" Grid.Column="0" Text="GLU_AC" TextColor="AntiqueWhite" FontSize="Medium"/>
-                <Entry x:Name="entry_AC" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="1" Text="" TextColor="Black" FontSize="Medium"/>
-                <Label Grid.Row="2" Grid.Column="2" Text="GLU_PC" TextColor="AntiqueWhite" FontSize="Medium"/>
-                <Entry x:Name="entry_PC" Grid.Row="2" Grid.Column="3" Grid.ColumnSpan="1" Text="" TextColor="Black" FontSize="Medium"/>
-                <Label Grid.Row="3" Grid.Column="0" Text="Note" TextColor="AntiqueWhite" FontSize="Medium"/>
-            </Grid>
-            <Entry x:Name="entry_note"/>
+        <StackLayout Padding="0,20,0,0" VerticalOptions="FillAndExpand" BackgroundColor="White">
+            <Frame HasShadow="False" BackgroundColor="White">
+                <Label x:Name="labelTitle"  TextColor="DarkSlateGray" FontSize="Large" FontAttributes="Bold" HorizontalTextAlignment="Start"/>
+            </Frame>
+            <Frame HasShadow="False" BackgroundColor="LightSkyBlue" Padding="10">
+                <StackLayout Orientation="Horizontal">
+                    <Label Text="標題" TextColor="DarkSlateGray" FontSize="Medium" VerticalOptions="CenterAndExpand" FontAttributes="Bold" WidthRequest="50"/>
+                    <Entry x:Name="entry_name" Text="" TextColor="Black" FontSize="Medium"  HorizontalOptions="FillAndExpand"/>
+                </StackLayout>
+            </Frame>
+            <Frame HasShadow="False" BackgroundColor="LightSkyBlue" Padding="10">
+                <StackLayout Orientation="Horizontal">
+                    <Label Text="飯前血糖" TextColor="DarkSlateGray" FontSize="Medium" VerticalOptions="CenterAndExpand" FontAttributes="Bold" WidthRequest="50"/>
+                    <Entry x:Name="entry_PC" Text="" TextColor="Black" FontSize="Medium" HorizontalOptions="FillAndExpand" Keyboard="Numeric"/>
+                </StackLayout>
+            </Frame>
+            <Frame HasShadow="False" BackgroundColor="LightSkyBlue" Padding="10">
+                <StackLayout Orientation="Horizontal">
+                    <Label Text="飯後血糖" TextColor="DarkSlateGray" FontSize="Medium" VerticalOptions="CenterAndExpand" FontAttributes="Bold" WidthRequest="50"/>
+                    <Entry x:Name="entry_AC" Text="" TextColor="Black" FontSize="Medium" HorizontalOptions="FillAndExpand" Keyboard="Numeric"/>
+                </StackLayout>
+            </Frame>
+            <Frame HasShadow="False" BackgroundColor="LightSkyBlue" Padding="10">
+                <StackLayout Orientation="Horizontal">
+                    <Label Text="註記" TextColor="DarkSlateGray" FontSize="Medium" VerticalOptions="CenterAndExpand" FontAttributes="Bold" WidthRequest="50"/>
+                    <Entry x:Name="entry_note" HorizontalOptions="FillAndExpand"/>
+                </StackLayout>
+            </Frame>
             <StackLayout Orientation="Horizontal">
                 <Button x:Name="BtnTakePic"  Text="Take" Clicked="BtnTakePic_Clicked" HorizontalOptions="FillAndExpand"/>
                 <Button x:Name="BtnLoadPic"  Text="Load" Clicked="BtnLoadPic_Clicked" HorizontalOptions="FillAndExpand"/>
             </StackLayout>
-            <BoxView Color="Cyan" HeightRequest="1" HorizontalOptions="FillAndExpand"/>
+            <BoxView Color="DimGray" HeightRequest="1" HorizontalOptions="FillAndExpand"/>
             <Image x:Name="resultImage" HeightRequest="200"/>
-            <BoxView Color="Cyan" HeightRequest="1" HorizontalOptions="FillAndExpand"/>
+            <BoxView Color="DimGray" HeightRequest="1" HorizontalOptions="FillAndExpand"/>
             <StackLayout Orientation="Horizontal" VerticalOptions="EndAndExpand">
                 <Button x:Name="BtnCancel"  Text="Cancel" Clicked="BtnCancel_Clicked" HorizontalOptions="FillAndExpand"/>
                 <Button x:Name="BtnSave"  Text="Save" Clicked="BtnSave_Clicked" HorizontalOptions="FillAndExpand"/>

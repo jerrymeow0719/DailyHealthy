@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 using Xamarin.Essentials;
 
 namespace DailyHealthy.Models
@@ -9,40 +10,42 @@ namespace DailyHealthy.Models
     class Constants
     {
         public const string DatabaseFilename = "DailyHealthy.db";
-        SQLiteConnection conn;
+        SQLiteAsyncConnection conn;
 
         public Constants()
         {
             string dbPath = System.IO.Path.Combine(FileSystem.AppDataDirectory, DatabaseFilename);
 
-            using (conn = new SQLiteConnection(dbPath))
-            {
-                conn.CreateTable<EventModel>();
-            }   
+            conn = new SQLiteAsyncConnection(dbPath);
+            conn.CreateTableAsync<ConstantsModel>().Wait();
         }
-        public List<EventModel> GetItemsAsync()
+        public async Task<List<ConstantsModel>> GetItemsAsync()
         {
-            return conn.Table<EventModel>().ToList();
+            return await conn.Table<ConstantsModel>().ToListAsync();
         }
-        public List<EventModel> GetItemsAsync(DateTime dateTime)
+        public async Task<List<ConstantsModel>> GetItemsAsync(DateTime dateTime)
         {
-            return conn.Table<EventModel>().Where(i => (i.Datetime == dateTime)).ToList();
+            return await conn.Table<ConstantsModel>().Where(i => (i.Datetime == dateTime)).ToListAsync();
         }
-        public List<EventModel> GetItemsAsync(DateTime dateTime, string name)
+        public async Task<List<ConstantsModel>> GetItemsAsync(int year,int month)
         {
-            return conn.Table<EventModel>().Where(i => (i.Datetime == dateTime) && (i.Name == name)).ToList();
+            return await conn.Table<ConstantsModel>().Where(i => (i.Datetime.Year == year) && (i.Datetime.Month == month)).ToListAsync();
         }
-        public void InsertItemAsync(EventModel eventModel)
+        public async Task<ConstantsModel> GetItemsAsync(DateTime dateTime, string name)
         {
-            conn.Insert(eventModel);
+            return await conn.Table<ConstantsModel>().Where(i => (i.Datetime == dateTime) && (i.Name == name)).FirstOrDefaultAsync();
         }
-        public void UpdateItemAsync(EventModel eventModel)
+        public async void InsertItemAsync(ConstantsModel constantsModel)
         {
-            conn.Update(eventModel);
+           await conn.InsertAsync(constantsModel);
         }
-        public void DeleteItemAsync(EventModel eventModel)
+        public async void UpdateItemAsync(ConstantsModel constantsModel)
         {
-            conn.Delete(eventModel);
+            await conn.UpdateAsync(constantsModel);
+        }
+        public async void DeleteItemAsync(ConstantsModel constantsModel)
+        {
+            await conn.DeleteAsync(constantsModel);
         }
     }
 }
